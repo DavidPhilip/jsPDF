@@ -1,7 +1,7 @@
 /** @preserve
  * jsPDF - PDF Document creation from JavaScript
- * Version 1.1.135-git Built on 2015-05-16T00:15
- *                           CommitID e0da47f3da
+ * Version 1.1.174-git Built on 2015-06-23T20:17
+ *                           CommitID 67cd0d6b3c
  *
  * Copyright (c) 2010-2014 James Hall <james@parall.ax>, https://github.com/MrRio/jsPDF
  *               2010 Aaron Spike, https://github.com/acspike
@@ -2035,7 +2035,7 @@ var jsPDF = (function(global) {
 	 * pdfdoc.mymethod() // <- !!!!!!
 	 */
 	jsPDF.API = {events:[]};
-	jsPDF.version = "1.1.135-debug 2015-05-16T00:15:jameshall";
+	jsPDF.version = "1.1.174-debug 2015-06-23T20:17:root";
 
 	if (typeof define === 'function' && define.amd) {
 		define('jsPDF', function() {
@@ -15633,7 +15633,7 @@ function XHR(url) {
  * http://opensource.org/licenses/mit-license
  */
 
-html2pdf = function(html,pdf,callback) {
+function html2pdf (html,pdf,callback) {
 	var canvas = pdf.canvas;
 	if (!canvas) {
 		alert('jsPDF canvas plugin not installed');
@@ -16880,6 +16880,9 @@ var FlateStream = (function() {
  * This allows a host page to simply include require.js and bootstrap the page with a single require statement.
  */
 
+// Skip if Require.JS not installed
+if (typeof require === 'object') {
+
 if (typeof require_baseUrl_override === 'undefined'){
 	require_baseUrl_override = '../';
 }
@@ -16980,6 +16983,7 @@ require.config({
     	 'html2pdf': 'libs/html2pdf'
      }
 });
+} // Require.JS
 /** vim: et:ts=4:sw=4:sts=4
  * @license RequireJS 2.1.15 Copyright (c) 2010-2014, The Dojo Foundation All Rights Reserved.
  * Available via the MIT or new BSD license.

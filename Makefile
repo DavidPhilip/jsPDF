@@ -1,5 +1,5 @@
 all:
 	npm install
 	npm install -g uglify-js
-	bower install
+	bower install --allow-root
 	./build.sh
