@@ -1,20 +1,30 @@
-function Font(family, size) {
-    var container = document.createElement('div'),
-        img = document.createElement('img'),
-        span = document.createElement('span'),
-        sampleText = 'Hidden Text',
-        baseline,
-        middle;
+_html2canvas.Util.Font = (function () {
+
+  var fontData = {};
+
+  return function(font, fontSize, doc) {
+    if (fontData[font + "-" + fontSize] !== undefined) {
+      return fontData[font + "-" + fontSize];
+    }
+
+    var container = doc.createElement('div'),
+    img = doc.createElement('img'),
+    span = doc.createElement('span'),
+    sampleText = 'Hidden Text',
+    baseline,
+    middle,
+    metricsObj;
 
     container.style.visibility = "hidden";
-    container.style.fontFamily = family;
-    container.style.fontSize = size;
+    container.style.fontFamily = font;
+    container.style.fontSize = fontSize;
     container.style.margin = 0;
     container.style.padding = 0;
 
-    document.body.appendChild(container);
+    doc.body.appendChild(container);
 
-    img.src = smallImage();
+    // http://probablyprogramming.com/2009/03/15/the-tiniest-gif-ever (handtinywhite.gif)
+    img.src = "data:image/gif;base64,R0lGODlhAQABAIABAP///wAAACwAAAAAAQABAAACAkQBADs=";
     img.width = 1;
     img.height = 1;
 
@@ -22,27 +32,33 @@ function Font(family, size) {
     img.style.padding = 0;
     img.style.verticalAlign = "baseline";
 
-    span.style.fontFamily = family;
-    span.style.fontSize = size;
+    span.style.fontFamily = font;
+    span.style.fontSize = fontSize;
     span.style.margin = 0;
     span.style.padding = 0;
 
-    span.appendChild(document.createTextNode(sampleText));
+    span.appendChild(doc.createTextNode(sampleText));
     container.appendChild(span);
     container.appendChild(img);
     baseline = (img.offsetTop - span.offsetTop) + 1;
 
     container.removeChild(span);
-    container.appendChild(document.createTextNode(sampleText));
+    container.appendChild(doc.createTextNode(sampleText));
 
     container.style.lineHeight = "normal";
     img.style.verticalAlign = "super";
 
     middle = (img.offsetTop-container.offsetTop) + 1;
+    metricsObj = {
+      baseline: baseline,
+      lineWidth: 1,
+      middle: middle
+    };
 
-    document.body.removeChild(container);
+    fontData[font + "-" + fontSize] = metricsObj;
 
-    this.baseline = baseline;
-    this.lineWidth = 1;
-    this.middle = middle;
-}
+    doc.body.removeChild(container);
+
+    return metricsObj;
+  };
+})();
