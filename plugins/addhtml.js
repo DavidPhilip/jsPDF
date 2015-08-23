@@ -96,7 +96,7 @@
 
     if(typeof html2canvas !== 'undefined' && !options.rstz) {
       // return html2canvas(element, options);
-      return html2canvas(element, options).then(function(canvas) {
+      return html2canvas(element).then(function(canvas) {
         options.onrendered(canvas);
       });
     }

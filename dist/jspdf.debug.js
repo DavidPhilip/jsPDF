@@ -1,7 +1,7 @@
 /** @preserve
  * jsPDF - PDF Document creation from JavaScript
- * Version 1.1.235-git Built on 2015-08-23T19:32
- *                           CommitID 81cab271a5
+ * Version 1.1.176-git Built on 2015-06-25T21:28
+ *                           CommitID 29bc195536
  *
  * Copyright (c) 2010-2014 James Hall <james@parall.ax>, https://github.com/MrRio/jsPDF
  *               2010 Aaron Spike, https://github.com/acspike
@@ -2035,7 +2035,7 @@ var jsPDF = (function(global) {
 	 * pdfdoc.mymethod() // <- !!!!!!
 	 */
 	jsPDF.API = {events:[]};
-	jsPDF.version = "1.1.235-debug 2015-08-23T19:32:DavidPhilip";
+	jsPDF.version = "1.1.176-debug 2015-06-25T21:28:root";
 
 	if (typeof define === 'function' && define.amd) {
 		define('jsPDF', function() {
@@ -2146,7 +2146,7 @@ var jsPDF = (function(global) {
 
     if(typeof html2canvas !== 'undefined' && !options.rstz) {
       // return html2canvas(element, options);
-      return html2canvas(element, options).then(function(canvas) {
+      return html2canvas(element).then(function(canvas) {
         options.onrendered(canvas);
       });
     }
@@ -7483,7 +7483,7 @@ jsPDFAPI.putTotalPages = function(pageExpression) {
 }(typeof self !== "undefined" && self || typeof window !== "undefined" && window || this.content || this));
 /* FileSaver.js
  * A saveAs() FileSaver implementation.
- * 1.1.20150716
+ * 2015-05-07.2
  *
  * By Eli Grey, http://eligrey.com
  * License: X11/MIT
@@ -7510,7 +7510,11 @@ var saveAs = saveAs || (function(view) {
 		, save_link = doc.createElementNS("http://www.w3.org/1999/xhtml", "a")
 		, can_use_save_link = "download" in save_link
 		, click = function(node) {
-			var event = new MouseEvent("click");
+			var event = doc.createEvent("MouseEvents");
+			event.initMouseEvent(
+				"click", true, false, view, 0, 0, 0, 0, 0
+				, false, false, false, false, 0, null
+			);
 			node.dispatchEvent(event);
 		}
 		, webkit_req_fs = view.webkitRequestFileSystem
@@ -7561,10 +7565,8 @@ var saveAs = saveAs || (function(view) {
 			}
 			return blob;
 		}
-		, FileSaver = function(blob, name, no_auto_bom) {
-			if (!no_auto_bom) {
-				blob = auto_bom(blob);
-			}
+		, FileSaver = function(blob, name) {
+			blob = auto_bom(blob);
 			// First try a.download, then web filesystem, then object URLs
 			var
 				  filesaver = this
@@ -7612,12 +7614,10 @@ var saveAs = saveAs || (function(view) {
 				object_url = get_URL().createObjectURL(blob);
 				save_link.href = object_url;
 				save_link.download = name;
-				setTimeout(function() {
-					click(save_link);
-					dispatch_all();
-					revoke(object_url);
-					filesaver.readyState = filesaver.DONE;
-				});
+				click(save_link);
+				filesaver.readyState = filesaver.DONE;
+				dispatch_all();
+				revoke(object_url);
 				return;
 			}
 			// Object and web filesystem URLs have a problem saving in Google Chrome when
@@ -7688,17 +7688,14 @@ var saveAs = saveAs || (function(view) {
 			}), fs_error);
 		}
 		, FS_proto = FileSaver.prototype
-		, saveAs = function(blob, name, no_auto_bom) {
-			return new FileSaver(blob, name, no_auto_bom);
+		, saveAs = function(blob, name) {
+			return new FileSaver(blob, name);
 		}
 	;
 	// IE 10+ (native saveAs)
 	if (typeof navigator !== "undefined" && navigator.msSaveOrOpenBlob) {
-		return function(blob, name, no_auto_bom) {
-			if (!no_auto_bom) {
-				blob = auto_bom(blob);
-			}
-			return navigator.msSaveOrOpenBlob(blob, name || "download");
+		return function(blob, name) {
+			return navigator.msSaveOrOpenBlob(auto_bom(blob), name);
 		};
 	}
 
